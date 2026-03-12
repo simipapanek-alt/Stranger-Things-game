@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Stranger Things Ultra Game</title>
+
+<style>
+
+body{
+background:black;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+#menu{
+margin-top:40px;
+}
+
+button{
+padding:10px 20px;
+margin:5px;
+font-size:16px;
+}
+
+#game{
+width:900px;
+height:520px;
+margin:auto;
+background:black;
+border:4px solid red;
+position:relative;
+display:none;
+overflow:hidden;
+}
+
+.player{
+width:30px;
+height:30px;
+position:absolute;
+}
+
+#player1{background:#ff77aa;}
+#player2{background:#77aaff;}
+
+.enemy{
+width:35px;
+height:35px;
+background:red;
+position:absolute;
+}
+
+#boss{
+width:60px;
+height:60px;
+background:purple;
+position:absolute;
+display:none;
+}
+
+.collect{
+width:25px;
+height:25px;
+background:yellow;
+position:absolute;
+}
+
+#fog{
+position:absolute;
+width:100%;
+height:100%;
+background:white;
+opacity:0.05;
+pointer-events:none;
+animation:fog 3s infinite;
+}
+
+@keyframes fog{
+0%{opacity:0.05}
+50%{opacity:0.15}
+100%{opacity:0.05}
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="menu">
+
+<h1>Stranger Things Game</h1>
+
+<p>Vyber mapu:</p>
+
+<button onclick="setMap('hawkins')">Hawkins</button>
+<button onclick="setMap('mall')">Starcourt Mall</button>
+<button onclick="setMap('lab')">Hawkins Lab</button>
+
+<p>Vyber postavu:</p>
+
+<button onclick="startGame()">Eleven</button>
+<button onclick="startGame()">Mike</button>
+<button onclick="startGame()">Dustin</button>
+<button onclick="startGame()">Lucas</button>
+<button onclick="startGame()">Will</button>
+<button onclick="startGame()">Max</button>
+<button onclick="startGame()">Steve</button>
+<button onclick="startGame()">Robin</button>
+
+</div>
+
+<div id="game">
+
+<div id="fog"></div>
+
+<div id="player1" class="player"></div>
+<div id="player2" class="player"></div>
+
+<div id="enemy" class="enemy"></div>
+
+<div id="boss"></div>
+
+<div id="eggo" class="collect"></div>
+
+</div>
+
+<audio autoplay loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3a9f6dbaf0.mp3">
+</audio>
+
+<h3>Score: <span id="score">0</span></h3>
+
+<script>
+
+let map="hawkins"
+
+function setMap(m){
+map=m
+}
+
+let score=0
+
+let p1x=200
+let p1y=200
+
+let p2x=400
+let p2y=200
+
+let ex=100
+let ey=100
+
+function startGame(){
+
+document.getElementById("menu").style.display="none"
+document.getElementById("game").style.display="block"
+
+if(map=="hawkins"){
+document.getElementById("game").style.background="#002200"
+}
+
+if(map=="mall"){
+document.getElementById("game").style.background="#220022"
+}
+
+if(map=="lab"){
+document.getElementById("game").style.background="#222222"
+}
+
+spawnEggo()
+
+}
+
+function spawnEggo(){
+
+document.getElementById("eggo").style.left=Math.random()*850+"px"
+document.getElementById("eggo").style.top=Math.random()*480+"px"
+
+}
+
+document.addEventListener("keydown",function(e){
+
+if(e.key=="ArrowRight")p1x+=10
+if(e.key=="ArrowLeft")p1x-=10
+if(e.key=="ArrowUp")p1y-=10
+if(e.key=="ArrowDown")p1y+=10
+
+if(e.key=="d")p2x+=10
+if(e.key=="a")p2x-=10
+if(e.key=="w")p2y-=10
+if(e.key=="s")p2y+=10
+
+})
+
+function update(){
+
+let p1=document.getElementById("player1")
+let p2=document.getElementById("player2")
+let enemy=document.getElementById("enemy")
+let eggo=document.getElementById("eggo")
+
+p1.style.left=p1x+"px"
+p1.style.top=p1y+"px"
+
+p2.style.left=p2x+"px"
+p2.style.top=p2y+"px"
+
+if(Math.abs(p1x-eggo.offsetLeft)<25 || Math.abs(p2x-eggo.offsetLeft)<25){
+
+score++
+document.getElementById("score").innerText=score
+spawnEggo()
+
+if(score==12){
+document.getElementById("boss").style.display="block"
+}
+
+}
+
+if(p1x>ex)ex+=1
+if(p1x<ex)ex-=1
+if(p1y>ey)ey+=1
+if(p1y<ey)ey-=1
+
+enemy.style.left=ex+"px"
+enemy.style.top=ey+"px"
+
+}
+
+setInterval(update,100)
+
+</script>
+
+</body>
+</html>
